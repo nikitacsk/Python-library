@@ -1,0 +1,6 @@
+env
+db.sqlite3
+.DS_Store
+identifier.sqlite
+__pycache__
+.idea
