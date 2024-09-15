@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ view.object.pk|yesno:"Update Genre,Add New Genre" }}</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+
+<a href="{% url 'genre_list' %}">Back to Genres List</a>
+{% endblock %}

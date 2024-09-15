@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Book List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author(s)</th>
+                <th>Summary</th>
+                <th>Availability</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+                <tr>
+                    <td>{{ book.title }}</td>
+                    <td>
+                        {% for author in book.authors.all %}
+                            {{ author.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% if book.summary|length > 30 %}
+                            {{ book.summary|truncatewords:30 }}...
+                        {% else %}
+                            {{ book.summary }}
+                        {% endif %}
+                    </td>
+                    <td>{% if book.available %}Available{% else %}Not Available{% endif %}</td>
+                    <td>
+                        <a href="{% url 'book_detail' book.pk %}">View Details</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

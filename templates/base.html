@@ -12,9 +12,17 @@
                 <li><a href="{% url 'home' %}">Home</a></li>
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'logout' %}">Logout</a></li>
+                    <li><a href="{% url 'borrow_history' %}">Borrow history</a></li>
                 {% else %}
                     <li><a href="{% url 'login' %}">Login</a></li>
                     <li><a href="{% url 'register' %}">Register</a></li>
+                {% endif %}
+                <li><a href="{% url 'book_list' %}">Library fund</a></li>
+                {% if user.is_staff%}
+                    <li><a href="{% url 'author_list' %}">Authors</a></li>
+                    <li><a href="{% url 'genre_list' %}">Genres</a></li>
+                    <li><a href="{% url 'book_create' %}">New book</a></li>
+                    <li><a href="{% url 'borrow_requests' %}">Borrow requests</a></li>
                 {% endif %}
             </ul>
         </nav>

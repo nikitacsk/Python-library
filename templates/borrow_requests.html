@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+    <h1>Borrow Requests</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Book Title</th>
+                <th>User</th>
+                <th>Request Date</th>
+                <th>Approval Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in borrow_requests %}
+                <tr>
+                    <td>{{ request.book.title }}</td>
+                    <td>{{ request.borrower.username }}</td>
+                    <td>{{ request.request_date }}</td>
+                    <td>{{ request.approval_date|default:"-" }}</td>
+                    <td>{{ request.get_status_display }}</td>
+                    <td>
+                        {% if request.status == request.PENDING %}
+                            <form action="{% url 'borrow_request_update' request.pk 'approve' %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit">Approve</button>
+                            </form>
+                            <form action="{% url 'borrow_request_update' request.pk 'decline' %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit">Decline</button>
+                            </form>
+                        {% elif request.status == request.APPROVED %}
+                            <form action="{% url 'borrow_request_update' request.pk 'complete' %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit">Complete</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6">No borrow requests available.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

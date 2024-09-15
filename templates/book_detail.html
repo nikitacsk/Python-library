@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+    <h1>{{ book.title }}</h1>
+    <p><strong>Genres:</strong> {% for genre in book.genres.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+    <p><strong>Authors:</strong> {% for author in book.authors.all %}{{ author.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+    <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+    <p><strong>Published Date:</strong> {{ book.published_date }}</p>
+    <p><strong>Publisher:</strong> {{ book.publisher }}</p>
+    <p><strong>Summary:</strong> {{ book.summary }}</p>
+
+    <p><strong>Availability:</strong> {% if book.available %}Available{% else %}Not Available{% endif %}</p>
+
+    {% if user.is_authenticated %}
+        <form method="post">
+            {% csrf_token %}
+            {% if not user_borrow_request %}
+                <button type="submit" name="borrow">Request to Borrow</button>
+            {% elif user_borrow_request.status == user_borrow_request.APPROVED %}
+                <button type="submit" name="collect">Collect Book</button>
+            {% endif %}
+        </form>
+    {% else %}
+        <p>Please <a href="{% url 'login' %}">login</a> to request a loan or collect the book.</p>
+    {% endif %}
+{% endblock %}

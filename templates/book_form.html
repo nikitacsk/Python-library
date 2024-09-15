@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>{% if object %}Update{% else %}Create{% endif %} Book</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">{% if object %}Update{% else %}Create{% endif %} Book</button>
+    </form>
+    <a href="{% url 'book_list' %}">Back to Book List</a>
+{% endblock %}
