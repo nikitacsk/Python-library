@@ -160,11 +160,9 @@ class BookListView(ListView):
 @method_decorator(login_required, name='dispatch')
 class BookDetailView(View):
     def get(self, request, pk):
-        # Get the specific book by ID
         book = get_object_or_404(Book, pk=pk)
         user_borrow_request = None
 
-        # Check if the user already has a borrow request for this book
         if request.user.is_authenticated:
             user_borrow_request = BorrowRequest.objects.filter(book=book, borrower=request.user).first()
 
@@ -187,7 +185,8 @@ class BookDetailView(View):
             else:
                 messages.error(request, 'You already have a borrow request for this book.')
 
-        elif 'collect' in request.POST and user_borrow_request and user_borrow_request.status == BorrowRequest.APPROVED:
+        elif ('collect' in request.POST and user_borrow_request
+              and user_borrow_request.status == BorrowRequest.APPROVED):
             user_borrow_request.status = BorrowRequest.COMPLETE
             user_borrow_request.complete_date = timezone.now()
             user_borrow_request.save()
@@ -220,7 +219,7 @@ class BorrowRequestListView(View):
         return render(request, 'borrow_requests.html', {'borrow_requests': borrow_requests})
 
 
-class BorrowRequestUpdateView(View):
+class BorrowRequestUpdateView(LibrarianOrAdminMixin, View):
     def post(self, request, pk, action):
         borrow_request = get_object_or_404(BorrowRequest, pk=pk)
 

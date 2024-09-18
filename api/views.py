@@ -3,10 +3,9 @@ from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
-
 from .permissions import IsAdminOrReadOnly
 from .serializers import RegisterSerializer, BorrowRequestSerializer, BookSerializer, AuthorSerializer, GenreSerializer, BookStockSerializer, BorrowRequestHistorySerializer
-from rest_framework import generics, status, viewsets, permissions
+from rest_framework import generics, status, viewsets
 from myapp.models import BorrowRequest, Book, Author, Genre
 from rest_framework.response import Response
 
@@ -237,8 +236,8 @@ class BorrowRequestViewSet(viewsets.ModelViewSet):
             if borrow_request.status != BorrowRequest.PENDING:
                 return Response({"error": "Only pending requests can be declined."}, status=status.HTTP_400_BAD_REQUEST)
             borrow_request.status = BorrowRequest.DECLINED
+        else:
+            return Response({"error": "Unknown action."}, status=status.HTTP_400_BAD_REQUEST)
 
         borrow_request.save()
         return Response(BorrowRequestSerializer(borrow_request).data, status=status.HTTP_200_OK)
-
-
